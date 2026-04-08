@@ -9,7 +9,11 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isHovering = false
-    @StateObject private var controller = CatAnimationController(clip: .idleBlink)
+    @StateObject private var controller = CatAnimationController(
+        primary: .idle,
+        variation: .idleBlink,
+        variationChance: CatAnimationConfig.blinkVariationChance
+    )
 
     var body: some View {
         ZStack {
