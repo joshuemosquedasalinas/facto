@@ -9,15 +9,14 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isHovering = false
-    
+    @StateObject private var controller = CatAnimationController(clip: .idleBlink)
+
     var body: some View {
         ZStack {
             Color.clear
-            AnimatedCatView(resourceName: "Waiting", frameCount: 6, frameSize: CGSize(width: 32, height: 32), scale: 4)
+            CatView(controller: controller)
                 .contextMenu {
-                    Button(action: {
-                        isHovering.toggle()
-                    }) {
+                    Button(action: { isHovering.toggle() }) {
                         HStack {
                             Text("Hover")
                             if isHovering {
