@@ -2,6 +2,8 @@ import AppKit
 import SwiftUI
 
 struct WindowAccessor: NSViewRepresentable {
+    var isHovering: Bool
+
     func makeNSView(context: Context) -> NSView {
         let view = NSView()
         DispatchQueue.main.async {
@@ -26,5 +28,7 @@ struct WindowAccessor: NSViewRepresentable {
         window.hasShadow = false
         window.styleMask.remove(.titled)
         window.styleMask.insert(.borderless)
+        
+        window.level = isHovering ? .floating : .normal
     }
 }
