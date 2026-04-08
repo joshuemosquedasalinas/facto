@@ -5,7 +5,7 @@ import AppKit
 struct CatAnimationClip {
 
     /// Human-readable identifier used for debugging and future state-machine transitions.
-    /// Examples: "idleBlink", "walk", "sit", "sleep"
+    /// Examples: "idle", "idleBlink", "walk", "sit", "sleep"
     let name: String
 
     /// Ordered sequence of frames for this clip.
@@ -15,7 +15,6 @@ struct CatAnimationClip {
     let frameDurations: [TimeInterval]
 
     /// Index of the frame treated as the neutral/rest pose.
-    /// The controller shows this frame during idle pauses between cycles.
     let restFrameIndex: Int
 
     var frameCount: Int { frames.count }
@@ -25,7 +24,21 @@ struct CatAnimationClip {
 
 extension CatAnimationClip {
 
-    /// The primary idle + blink animation. Loaded once at app start.
+    /// Subtle looping body animation — the default resting state.
+    static let idle: CatAnimationClip = {
+        let frames = CatSpriteLoader.loadStrip(
+            assetName: CatAnimationConfig.idleAsset,
+            frameCount: CatAnimationConfig.idleFrameCount
+        )
+        return CatAnimationClip(
+            name: "idle",
+            frames: frames,
+            frameDurations: CatAnimationConfig.idleFrameDurations,
+            restFrameIndex: 0
+        )
+    }()
+
+    /// Single blink cycle, layered into idle as a variation.
     static let idleBlink: CatAnimationClip = {
         let frames = CatSpriteLoader.loadStrip(
             assetName: CatAnimationConfig.idleBlinkAsset,
