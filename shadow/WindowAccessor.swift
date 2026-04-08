@@ -23,8 +23,8 @@ struct WindowAccessor: NSViewRepresentable {
         window.titleVisibility = .hidden
         window.titlebarAppearsTransparent = true
         window.isMovableByWindowBackground = true
-        window.hasShadow = true
-        window.styleMask.insert(.fullSizeContentView)
-        window.standardWindowButton(.zoomButton)?.isHidden = true
+        window.hasShadow = false
+        window.styleMask.remove(.titled)
+        window.styleMask.insert(.borderless)
     }
 }
