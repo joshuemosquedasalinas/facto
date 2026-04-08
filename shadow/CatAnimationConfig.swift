@@ -84,4 +84,36 @@ enum CatAnimationConfig {
     /// How many full sit cycles to play before returning to idle.
     static let sitCyclesMin = 2
     static let sitCyclesMax = 5
+
+    // MARK: - lieDown clip
+
+    static let lieDownAsset      = "cat05_liedown_strip24"
+    static let lieDownFrameCount = 24
+
+    /// A slightly slower settle-in motion so the transition reads as intentional.
+    static let lieDownFrameDurations = Array(repeating: 0.06, count: lieDownFrameCount)
+
+    // MARK: - LieDown behavior
+
+    /// Probability that a lie-down episode follows an idle phase.
+    static let lieDownChance: Double = 0.10
+
+    /// Probability that a sit episode softens further into lie-down before returning to idle.
+    static let lieDownFromSitChance: Double = 0.30
+
+    /// Time spent resting in the lying state before returning to idle.
+    static let lieDownRestMin: TimeInterval = 3.5
+    static let lieDownRestMax: TimeInterval = 6.0
+
+    /// Only the first 8 sliced frames are used for the lie-down behavior.
+    static let lieDownActiveRange = 0...7
+
+    /// Slower resting cadence so the lie-down loop breathes instead of chattering.
+    static let lieDownRestFrameDuration: TimeInterval = 0.11
+    static let lieDownRestStillFrameDuration: TimeInterval = 0.18
+    static let lieDownRestLoopPauseMin: TimeInterval = 0.08
+    static let lieDownRestLoopPauseMax: TimeInterval = 0.22
+
+    /// Brief sit beat after lying down so the cat rises naturally before idling.
+    static let lieDownExitSitCycles = 1
 }

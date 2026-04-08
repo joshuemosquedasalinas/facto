@@ -66,4 +66,16 @@ extension CatAnimationClip {
             frameDurations: CatAnimationConfig.sitFrameDurations
         )
     }()
+
+    /// Lie-down transition — played once, then held briefly by behavior logic.
+    static let lieDown: CatAnimationClip = {
+        CatAnimationClip(
+            name: "lieDown",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.lieDownAsset,
+                frameCount: CatAnimationConfig.lieDownFrameCount
+            ),
+            frameDurations: CatAnimationConfig.lieDownFrameDurations
+        )
+    }()
 }

@@ -50,9 +50,13 @@ final class CatBehaviorController: ObservableObject {
             guard !Task.isCancelled else { return }
 
             let roll = Double.random(in: 0..<1)
-            if roll < CatAnimationConfig.sitChance {
+            if roll < CatAnimationConfig.lieDownChance {
+                await runLieDownPhase()
+            } else if roll < (CatAnimationConfig.lieDownChance + CatAnimationConfig.sitChance) {
                 await runSitPhase()
-            } else if roll < (CatAnimationConfig.sitChance + CatAnimationConfig.walkChance) {
+            } else if roll < (CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.sitChance
+                + CatAnimationConfig.walkChance) {
                 await runWalkPhase()
             }
         }
@@ -140,12 +144,76 @@ final class CatBehaviorController: ObservableObject {
             await playClip(.sit)
         }
 
+        if Double.random(in: 0..<1) < CatAnimationConfig.lieDownFromSitChance {
+            await runLieDownPhase()
+            return
+        }
+
         // Occasionally transition to blink before returning to idle
         if Double.random(in: 0..<1) < CatAnimationConfig.blinkVariationChance {
             await playClip(.idleBlink)
         }
 
         state = .idle
+        currentFrame = CatAnimationClip.idle.frames[safe: 0]
+    }
+
+    // MARK: - Lie-down phase
+
+    private func runLieDownPhase() async {
+        state = .lieDown
+
+        let activeRange = CatAnimationConfig.lieDownActiveRange
+
+        await playClip(.lieDown, frames: activeRange)
+        guard !Task.isCancelled else { return }
+
+        let restDuration = TimeInterval.random(
+            in: CatAnimationConfig.lieDownRestMin...CatAnimationConfig.lieDownRestMax
+        )
+        let deadline = Date().addingTimeInterval(restDuration)
+
+        while !Task.isCancelled, Date() < deadline {
+            await playLieDownRestLoop()
+            guard !Task.isCancelled else { return }
+
+            let pause = TimeInterval.random(
+                in: CatAnimationConfig.lieDownRestLoopPauseMin...CatAnimationConfig.lieDownRestLoopPauseMax
+            )
+            do { try await Task.sleep(for: .seconds(pause)) } catch { return }
+        }
+
+        guard !Task.isCancelled else { return }
+
+        state = .sit
+        for _ in 0..<CatAnimationConfig.lieDownExitSitCycles {
+            guard !Task.isCancelled else { return }
+            await playClip(.sit)
+        }
+
+        state = .idle
+        currentFrame = CatAnimationClip.idle.frames[safe: 0]
+    }
+
+    private func playLieDownRestLoop() async {
+        let clip = CatAnimationClip.lieDown
+        let pattern = lieDownRestPatterns.randomElement() ?? []
+
+        for index in pattern {
+            guard !Task.isCancelled else { return }
+            guard clip.frames.indices.contains(index) else { continue }
+
+            currentFrame = clip.frames[safe: index]
+
+            let duration: TimeInterval
+            if lieDownStillFrames.contains(index) {
+                duration = CatAnimationConfig.lieDownRestStillFrameDuration
+            } else {
+                duration = CatAnimationConfig.lieDownRestFrameDuration
+            }
+
+            do { try await Task.sleep(for: .seconds(duration)) } catch { return }
+        }
     }
 
     // MARK: - Animation playback
@@ -153,8 +221,14 @@ final class CatBehaviorController: ObservableObject {
     /// Advances through every frame of `clip` at each frame's configured duration.
     /// Pure playback — no state changes, no movement.
     private func playClip(_ clip: CatAnimationClip) async {
-        for index in 0..<clip.frameCount {
+        await playClip(clip, frames: 0..<clip.frameCount)
+    }
+
+    /// Plays a contiguous frame range from an existing clip using the clip's configured timing.
+    private func playClip(_ clip: CatAnimationClip, frames frameRange: some Sequence<Int>) async {
+        for index in frameRange {
             guard !Task.isCancelled else { return }
+            guard clip.frames.indices.contains(index) else { continue }
             currentFrame = clip.frames[safe: index]
             let duration = clip.frameDurations[safe: index] ?? 0.1
             do { try await Task.sleep(for: .seconds(duration)) } catch { return }
@@ -163,6 +237,15 @@ final class CatBehaviorController: ObservableObject {
 }
 
 // MARK: - Safe array subscript
+
+private let lieDownStillFrames: Set<Int> = [3, 4]
+
+private let lieDownRestPatterns: [[Int]] = [
+    [0, 1, 2, 3, 4, 4, 5, 6, 5, 4, 4, 3, 2, 1],
+    [1, 2, 3, 3, 4, 4, 5, 5, 4, 4, 3, 2],
+    [0, 1, 2, 3, 4, 4, 4, 5, 4, 3, 3, 2, 1],
+    [1, 2, 3, 4, 4, 5, 6, 6, 5, 4, 4, 3, 2],
+]
 
 private extension Array {
     subscript(safe index: Int) -> Element? {
