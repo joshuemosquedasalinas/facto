@@ -1,10 +1,10 @@
 import AppKit
 import SwiftUI
 
-/// Renders the current frame from a CatAnimationController.
-/// Knows nothing about timing or clip logic — pure display.
+/// Renders the current frame from a CatBehaviorController.
+/// Applies a horizontal flip when the cat faces left.
 struct CatView: View {
-    @ObservedObject var controller: CatAnimationController
+    @ObservedObject var controller: CatBehaviorController
 
     var body: some View {
         Group {
@@ -16,6 +16,7 @@ struct CatView: View {
                         width:  CatAnimationConfig.frameSize.width  * CatAnimationConfig.displayScale,
                         height: CatAnimationConfig.frameSize.height * CatAnimationConfig.displayScale
                     )
+                    .scaleEffect(x: controller.facingRight ? 1 : -1, y: 1)
             }
         }
     }

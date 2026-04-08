@@ -9,16 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isHovering = false
-    @StateObject private var controller = CatAnimationController(
-        primary: .idle,
-        variation: .idleBlink,
-        variationChance: CatAnimationConfig.blinkVariationChance
-    )
+    @StateObject private var motionProxy       = WindowMotionProxy()
+    @StateObject private var behaviorController = CatBehaviorController()
 
     var body: some View {
         ZStack {
             Color.clear
-            CatView(controller: controller)
+            CatView(controller: behaviorController)
                 .contextMenu {
                     Button(action: { isHovering.toggle() }) {
                         HStack {
@@ -31,6 +28,9 @@ struct ContentView: View {
                 }
         }
         .padding(18)
-        .background(WindowAccessor(isHovering: isHovering))
+        .background(WindowAccessor(isHovering: isHovering, motionProxy: motionProxy))
+        .onAppear {
+            behaviorController.start(motionProxy: motionProxy)
+        }
     }
 }

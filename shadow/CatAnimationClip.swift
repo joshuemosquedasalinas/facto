@@ -1,21 +1,16 @@
 import AppKit
 
-/// An immutable, named animation sequence ready to be driven by a CatAnimationController.
-/// Knows nothing about timing policies or idle behavior — that lives in the controller.
+/// An immutable, named animation sequence ready to be driven by a behavior controller.
 struct CatAnimationClip {
 
-    /// Human-readable identifier used for debugging and future state-machine transitions.
-    /// Examples: "idle", "idleBlink", "walk", "sit", "sleep"
+    /// Human-readable identifier. Examples: "idle", "idleBlink", "walk", "sit", "sleep"
     let name: String
 
-    /// Ordered sequence of frames for this clip.
+    /// Ordered sequence of frames.
     let frames: [NSImage]
 
     /// Per-frame hold duration in seconds. Must equal `frames.count`.
     let frameDurations: [TimeInterval]
-
-    /// Index of the frame treated as the neutral/rest pose.
-    let restFrameIndex: Int
 
     var frameCount: Int { frames.count }
 }
@@ -26,29 +21,37 @@ extension CatAnimationClip {
 
     /// Subtle looping body animation — the default resting state.
     static let idle: CatAnimationClip = {
-        let frames = CatSpriteLoader.loadStrip(
-            assetName: CatAnimationConfig.idleAsset,
-            frameCount: CatAnimationConfig.idleFrameCount
-        )
-        return CatAnimationClip(
+        CatAnimationClip(
             name: "idle",
-            frames: frames,
-            frameDurations: CatAnimationConfig.idleFrameDurations,
-            restFrameIndex: 0
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.idleAsset,
+                frameCount: CatAnimationConfig.idleFrameCount
+            ),
+            frameDurations: CatAnimationConfig.idleFrameDurations
         )
     }()
 
-    /// Single blink cycle, layered into idle as a variation.
+    /// Single blink cycle — layered into idle as a variation.
     static let idleBlink: CatAnimationClip = {
-        let frames = CatSpriteLoader.loadStrip(
-            assetName: CatAnimationConfig.idleBlinkAsset,
-            frameCount: CatAnimationConfig.idleBlinkFrameCount
-        )
-        return CatAnimationClip(
+        CatAnimationClip(
             name: "idleBlink",
-            frames: frames,
-            frameDurations: CatAnimationConfig.idleBlinkFrameDurations,
-            restFrameIndex: 0
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.idleBlinkAsset,
+                frameCount: CatAnimationConfig.idleBlinkFrameCount
+            ),
+            frameDurations: CatAnimationConfig.idleBlinkFrameDurations
+        )
+    }()
+
+    /// Walk cycle — sprite faces right by default; flip horizontally for leftward movement.
+    static let walk: CatAnimationClip = {
+        CatAnimationClip(
+            name: "walk",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.walkAsset,
+                frameCount: CatAnimationConfig.walkFrameCount
+            ),
+            frameDurations: CatAnimationConfig.walkFrameDurations
         )
     }()
 }
