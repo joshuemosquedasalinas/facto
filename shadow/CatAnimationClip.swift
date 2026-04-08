@@ -55,6 +55,30 @@ extension CatAnimationClip {
         )
     }()
 
+    /// Run cycle — higher-energy locomotion burst.
+    static let run: CatAnimationClip = {
+        CatAnimationClip(
+            name: "run",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.runAsset,
+                frameCount: CatAnimationConfig.runFrameCount
+            ),
+            frameDurations: CatAnimationConfig.runFrameDurations
+        )
+    }()
+
+    /// Dash burst — ultra-short, one-shot zoomie clip.
+    static let dash: CatAnimationClip = {
+        CatAnimationClip(
+            name: "dash",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.dashAsset,
+                frameCount: CatAnimationConfig.dashFrameCount
+            ),
+            frameDurations: CatAnimationConfig.dashFrameDurations
+        )
+    }()
+
     /// Sit cycle — temporary resting behavior.
     static let sit: CatAnimationClip = {
         CatAnimationClip(
@@ -76,6 +100,18 @@ extension CatAnimationClip {
                 frameCount: CatAnimationConfig.lieDownFrameCount
             ),
             frameDurations: CatAnimationConfig.lieDownFrameDurations
+        )
+    }()
+
+    /// Sleep cycle — looping rest state.
+    static let sleep: CatAnimationClip = {
+        CatAnimationClip(
+            name: "sleep",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.sleepAsset,
+                frameCount: CatAnimationConfig.sleepFrameCount
+            ),
+            frameDurations: CatAnimationConfig.sleepFrameDurations
         )
     }()
 }

@@ -66,6 +66,65 @@ enum CatAnimationConfig {
     static let walkDurationMin: TimeInterval = 1.5
     static let walkDurationMax: TimeInterval = 4.0
 
+    /// Probability that a completed walk burst escalates into a short run burst.
+    static let walkToRunChance: Double = 0.22
+    static let walkToDashChance: Double = 0.08
+
+    /// Duration of the calmer walk cooldown after a run resolves into walking.
+    static let walkCooldownDurationMin: TimeInterval = 0.8
+    static let walkCooldownDurationMax: TimeInterval = 1.6
+
+    // MARK: - run clip
+
+    static let runAsset      = "cat05_run_strip4"
+    static let runFrameCount = 4
+
+    static let runFrameDurations: [TimeInterval] = [
+        0.07, 0.07, 0.07, 0.07,
+    ]
+
+    /// Points per second the window moves while running.
+    static let runSpeed: CGFloat = 160
+
+    // MARK: - Run behavior
+
+    /// Probability that a run episode follows an idle phase. Lower than walk.
+    static let runChance: Double = 0.10
+
+    /// How long (seconds) a run burst lasts before settling down.
+    static let runDurationMin: TimeInterval = 0.7
+    static let runDurationMax: TimeInterval = 1.6
+
+    /// How often a run burst cools back down into walking instead of stopping outright.
+    static let runToWalkChance: Double = 0.40
+
+    /// How often a run burst resolves into a sit before returning to idle.
+    static let runToSitChance: Double = 0.20
+
+    /// How often a run burst spikes into a one-shot dash.
+    static let runToDashChance: Double = 0.12
+
+    // MARK: - dash clip
+
+    static let dashAsset      = "cat05_dash_strip9"
+    static let dashFrameCount = 9
+
+    static let dashFrameDurations: [TimeInterval] = [
+        0.045, 0.045, 0.04, 0.04, 0.04, 0.04, 0.045, 0.05, 0.055,
+    ]
+
+    /// Points per second the window moves while dashing.
+    static let dashSpeed: CGFloat = 240
+
+    // MARK: - Dash behavior
+
+    /// Probability that a dash episode follows an idle phase. Lower than run.
+    static let dashChance: Double = 0.03
+
+    /// How a dash resolves when triggered directly from idle.
+    static let dashFromIdleToWalkChance: Double = 0.20
+    static let dashFromIdleToRunChance: Double = 0.10
+
     // MARK: - sit clip
 
     static let sitAsset      = "cat05_sit_strip8"
@@ -116,4 +175,23 @@ enum CatAnimationConfig {
 
     /// Brief sit beat after lying down so the cat rises naturally before idling.
     static let lieDownExitSitCycles = 1
+
+    // MARK: - sleep clip
+
+    static let sleepAsset      = "cat05_sleep_strip8"
+    static let sleepFrameCount = 8
+
+    static let sleepFrameDurations: [TimeInterval] = [
+        0.15, 0.15, 0.15, 0.15,
+        0.15, 0.15, 0.15, 0.15,
+    ]
+
+    // MARK: - Sleep behavior
+
+    /// Probability that a sleep episode follows a lie-down phase.
+    static let sleepChance: Double = 0.40
+
+    /// How long (seconds) a sleep episode lasts before waking up.
+    static let sleepDurationMin: TimeInterval = 10.0
+    static let sleepDurationMax: TimeInterval = 25.0
 }
