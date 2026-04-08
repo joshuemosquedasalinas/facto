@@ -2,6 +2,8 @@
 /// Add new states here as the pet gains behaviors (sit, sleep, lieDown, etc.).
 enum CatState: Equatable {
     case idle
+    case sneakLeft
+    case sneakRight
     case walkLeft
     case walkRight
     case runLeft

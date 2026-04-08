@@ -56,15 +56,22 @@ final class CatBehaviorController: ObservableObject {
                 await runLieDownPhase()
             } else if roll < (CatAnimationConfig.dashChance
                 + CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.sneakChance) {
+                await runSneakPhase()
+            } else if roll < (CatAnimationConfig.dashChance
+                + CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.sneakChance
                 + CatAnimationConfig.sitChance) {
                 await runSitPhase()
             } else if roll < (CatAnimationConfig.dashChance
                 + CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.sneakChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.runChance) {
                 await runRunPhase()
             } else if roll < (CatAnimationConfig.dashChance
                 + CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.sneakChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.walkChance) {
@@ -128,6 +135,60 @@ final class CatBehaviorController: ObservableObject {
 
         // Snap back to idle rest frame before re-entering idle phase.
         settleToIdle()
+    }
+
+    // MARK: - Sneak phase
+
+    private func runSneakPhase(
+        preferredDirection: Bool? = nil,
+        origin: SneakOrigin = .idle
+    ) async {
+        guard let goRight = chooseMovementDirection(preferredDirection: preferredDirection) else { return }
+
+        let duration = TimeInterval.random(
+            in: CatAnimationConfig.sneakDurationMin...CatAnimationConfig.sneakDurationMax
+        )
+        await runMovementEpisode(
+            clip: .sneak,
+            state: goRight ? .sneakRight : .sneakLeft,
+            goRight: goRight,
+            speed: CatAnimationConfig.sneakSpeed,
+            duration: duration
+        )
+        guard !Task.isCancelled else { return }
+
+        let roll = Double.random(in: 0..<1)
+
+        switch origin {
+        case .idle:
+            if roll < CatAnimationConfig.sneakToWalkChance {
+                await runWalkCooldownPhase(goRight: goRight)
+            } else if roll < (CatAnimationConfig.sneakToWalkChance + CatAnimationConfig.sneakToSitChance) {
+                await runSitPhase()
+            } else if roll < (CatAnimationConfig.sneakToWalkChance
+                + CatAnimationConfig.sneakToSitChance
+                + CatAnimationConfig.sneakToLieDownChance) {
+                await runLieDownPhase()
+            } else {
+                settleToIdle()
+            }
+        case .sit:
+            if roll < 0.25 {
+                await runWalkCooldownPhase(goRight: goRight)
+            } else {
+                settleToIdle()
+            }
+        case .lieDown:
+            if roll < 0.65 {
+                state = .sit
+                await playClip(.sit)
+                settleToIdle()
+            } else if roll < 0.85 {
+                await runWalkCooldownPhase(goRight: goRight)
+            } else {
+                settleToIdle()
+            }
+        }
     }
 
     // MARK: - Run phase
@@ -242,6 +303,11 @@ final class CatBehaviorController: ObservableObject {
             await playClip(.sit)
         }
 
+        if Double.random(in: 0..<1) < CatAnimationConfig.sitToSneakChance {
+            await runSneakPhase(origin: .sit)
+            return
+        }
+
         if Double.random(in: 0..<1) < CatAnimationConfig.lieDownFromSitChance {
             await runLieDownPhase()
             return
@@ -282,6 +348,11 @@ final class CatBehaviorController: ObservableObject {
         }
 
         guard !Task.isCancelled else { return }
+
+        if Double.random(in: 0..<1) < CatAnimationConfig.lieDownToSneakChance {
+            await runSneakPhase(origin: .lieDown)
+            return
+        }
 
         // Occasionally drift into a deep sleep after lying down.
         if Double.random(in: 0..<1) < CatAnimationConfig.sleepChance {
@@ -470,4 +541,10 @@ private enum DashResolution {
     case idle
     case walk
     case run
+}
+
+private enum SneakOrigin {
+    case idle
+    case sit
+    case lieDown
 }

@@ -55,6 +55,18 @@ extension CatAnimationClip {
         )
     }()
 
+    /// Sneak cycle — low-profile crawl used for calm, deliberate movement.
+    static let sneak: CatAnimationClip = {
+        CatAnimationClip(
+            name: "sneak",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.sneakAsset,
+                frameCount: CatAnimationConfig.sneakFrameCount
+            ),
+            frameDurations: CatAnimationConfig.sneakFrameDurations
+        )
+    }()
+
     /// Run cycle — higher-energy locomotion burst.
     static let run: CatAnimationClip = {
         CatAnimationClip(

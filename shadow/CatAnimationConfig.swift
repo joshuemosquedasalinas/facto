@@ -66,6 +66,39 @@ enum CatAnimationConfig {
     static let walkDurationMin: TimeInterval = 1.5
     static let walkDurationMax: TimeInterval = 4.0
 
+    // MARK: - sneak clip
+
+    static let sneakAsset      = "cat05_sneak_strip8"
+    static let sneakFrameCount = 8
+
+    static let sneakFrameDurations: [TimeInterval] = [
+        0.12, 0.12, 0.12, 0.12,
+        0.12, 0.12, 0.12, 0.12,
+    ]
+
+    /// Points per second the window moves while sneaking.
+    static let sneakSpeed: CGFloat = 38
+
+    // MARK: - Sneak behavior
+
+    /// Probability that a sneak episode follows an idle phase. Lower than walk.
+    static let sneakChance: Double = 0.08
+
+    /// How long a sneak episode lasts before resolving.
+    static let sneakDurationMin: TimeInterval = 1.0
+    static let sneakDurationMax: TimeInterval = 2.3
+
+    /// Resolution mix after a sneak episode.
+    static let sneakToWalkChance: Double = 0.22
+    static let sneakToSitChance: Double = 0.20
+    static let sneakToLieDownChance: Double = 0.14
+
+    /// Probability that sit resolves into a brief sneak episode.
+    static let sitToSneakChance: Double = 0.10
+
+    /// Probability that lie-down resolves into a low crawl instead of sleep or sit.
+    static let lieDownToSneakChance: Double = 0.12
+
     /// Probability that a completed walk burst escalates into a short run burst.
     static let walkToRunChance: Double = 0.22
     static let walkToDashChance: Double = 0.08
