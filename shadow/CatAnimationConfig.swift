@@ -316,6 +316,60 @@ enum CatAnimationConfig {
     static let sleepDurationMin: TimeInterval = 10.0
     static let sleepDurationMax: TimeInterval = 25.0
 
+    // MARK: - attack clip
+
+    static let attackAsset      = "cat05_attack_strip7"
+    static let attackFrameCount = 7
+
+    /// Quick snappy one-shot burst — front-loaded then eases off.
+    static let attackFrameDurations: [TimeInterval] = [
+        0.055, 0.06, 0.065, 0.065, 0.065, 0.07, 0.075,
+    ]
+
+    // MARK: - Attack behavior
+
+    /// Probability per idle phase that an attack fires.
+    static let attackChance: Double = 0.04
+
+    /// Probability that a crouch hold converts to an attack lunge.
+    static let crouchToAttackChance: Double = 0.12
+
+    /// Probability that a sneak episode ends in an attack.
+    static let sneakToAttackChance: Double = 0.10
+
+    /// Post-attack resolutions.
+    static let attackToFrightChance: Double = 0.14   // recoil after striking
+    static let attackToCrouchChance: Double = 0.25
+    static let attackToSitChance: Double    = 0.15
+    static let attackToWalkChance: Double   = 0.12
+
+    // MARK: - fright clip
+
+    static let frightAsset      = "cat05_fright_strip8"
+    static let frightFrameCount = 8
+
+    /// Startled reaction — quick initial spike, then a brief held recoil.
+    static let frightFrameDurations: [TimeInterval] = [
+        0.06, 0.07, 0.09, 0.10, 0.10, 0.09, 0.08, 0.08,
+    ]
+
+    // MARK: - Fright behavior
+
+    /// Probability per idle phase that a fright fires.
+    static let frightChance: Double = 0.03
+
+    /// How long to hold the last fright frame before resolving (reads as "frozen in shock").
+    static let frightHoldMin: TimeInterval = 0.15
+    static let frightHoldMax: TimeInterval = 0.40
+
+    /// Probability that a walk episode ends in a fright (unexpected stop).
+    static let walkToFrightChance: Double = 0.05
+
+    /// Post-fright resolutions.
+    static let frightToRunChance:    Double = 0.14
+    static let frightToCrouchChance: Double = 0.30
+    static let frightToSneakChance:  Double = 0.20
+
     // MARK: - wallGrab clip
 
     static let wallGrabAsset      = "cat05_wallgrab_strip8"

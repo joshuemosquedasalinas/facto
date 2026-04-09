@@ -109,6 +109,27 @@ final class CatBehaviorController: ObservableObject {
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.dashChance
                 + CatAnimationConfig.wallGrabChance
+                + CatAnimationConfig.attackChance) {
+                await runAttackPhase()
+            } else if roll < (CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.crouchChance
+                + CatAnimationConfig.sitChance
+                + CatAnimationConfig.sneakChance
+                + CatAnimationConfig.hopChance
+                + CatAnimationConfig.runChance
+                + CatAnimationConfig.dashChance
+                + CatAnimationConfig.wallGrabChance
+                + CatAnimationConfig.attackChance
+                + CatAnimationConfig.frightChance) {
+                await runFrightPhase()
+            } else if roll < (CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.crouchChance
+                + CatAnimationConfig.sitChance
+                + CatAnimationConfig.sneakChance
+                + CatAnimationConfig.hopChance
+                + CatAnimationConfig.runChance
+                + CatAnimationConfig.dashChance
+                + CatAnimationConfig.wallGrabChance
                 + CatAnimationConfig.walkChance) {
                 await runWalkPhase()
             }
@@ -183,6 +204,15 @@ final class CatBehaviorController: ObservableObject {
             return
         }
 
+        if transitionRoll < (CatAnimationConfig.walkToHopChance
+            + CatAnimationConfig.walkToDashChance
+            + CatAnimationConfig.walkToRunChance
+            + CatAnimationConfig.walkToCrouchChance
+            + CatAnimationConfig.walkToFrightChance) {
+            await runFrightPhase()
+            return
+        }
+
         // Snap back to idle rest frame before re-entering idle phase.
         settleToIdle()
     }
@@ -212,15 +242,22 @@ final class CatBehaviorController: ObservableObject {
 
         switch origin {
         case .idle, .walk:
-            if roll < CatAnimationConfig.crouchToHopChance {
+            if roll < CatAnimationConfig.crouchToAttackChance {
+                await runAttackPhase()
+            } else if roll < (CatAnimationConfig.crouchToAttackChance
+                + CatAnimationConfig.crouchToHopChance) {
                 await runHopPhase(preferredDirection: facingRight, origin: .crouch)
-            } else if roll < (CatAnimationConfig.crouchToHopChance + CatAnimationConfig.crouchToSneakChance) {
+            } else if roll < (CatAnimationConfig.crouchToAttackChance
+                + CatAnimationConfig.crouchToHopChance
+                + CatAnimationConfig.crouchToSneakChance) {
                 await runSneakPhase(preferredDirection: facingRight, origin: .crouch)
-            } else if roll < (CatAnimationConfig.crouchToHopChance
+            } else if roll < (CatAnimationConfig.crouchToAttackChance
+                + CatAnimationConfig.crouchToHopChance
                 + CatAnimationConfig.crouchToSneakChance
                 + CatAnimationConfig.crouchToLieDownChance) {
                 await runLieDownPhase()
-            } else if roll < (CatAnimationConfig.crouchToHopChance
+            } else if roll < (CatAnimationConfig.crouchToAttackChance
+                + CatAnimationConfig.crouchToHopChance
                 + CatAnimationConfig.crouchToSneakChance
                 + CatAnimationConfig.crouchToLieDownChance
                 + CatAnimationConfig.crouchToSitChance) {
@@ -281,15 +318,22 @@ final class CatBehaviorController: ObservableObject {
 
         switch origin {
         case .idle:
-            if roll < CatAnimationConfig.sneakToHopChance {
+            if roll < CatAnimationConfig.sneakToAttackChance {
+                await runAttackPhase()
+            } else if roll < (CatAnimationConfig.sneakToAttackChance
+                + CatAnimationConfig.sneakToHopChance) {
                 await runHopPhase(preferredDirection: goRight, origin: .sneak)
-            } else if roll < (CatAnimationConfig.sneakToHopChance + CatAnimationConfig.sneakToWalkChance) {
+            } else if roll < (CatAnimationConfig.sneakToAttackChance
+                + CatAnimationConfig.sneakToHopChance
+                + CatAnimationConfig.sneakToWalkChance) {
                 await runWalkCooldownPhase(goRight: goRight)
-            } else if roll < (CatAnimationConfig.sneakToHopChance
+            } else if roll < (CatAnimationConfig.sneakToAttackChance
+                + CatAnimationConfig.sneakToHopChance
                 + CatAnimationConfig.sneakToWalkChance
                 + CatAnimationConfig.sneakToSitChance) {
                 await runSitPhase()
-            } else if roll < (CatAnimationConfig.sneakToHopChance
+            } else if roll < (CatAnimationConfig.sneakToAttackChance
+                + CatAnimationConfig.sneakToHopChance
                 + CatAnimationConfig.sneakToWalkChance
                 + CatAnimationConfig.sneakToSitChance
                 + CatAnimationConfig.sneakToLieDownChance) {
@@ -553,6 +597,66 @@ final class CatBehaviorController: ObservableObject {
         }
 
         settleToIdle()
+    }
+
+    // MARK: - Attack phase
+
+    private func runAttackPhase() async {
+        state = .attack
+        // Preserve the current facing — attack is a forward strike in whatever direction the cat faces.
+
+        await playClip(.attack)
+        guard !Task.isCancelled else { return }
+
+        let roll = Double.random(in: 0..<1)
+        if roll < CatAnimationConfig.attackToFrightChance {
+            // Recoil after the strike.
+            await runFrightPhase()
+        } else if roll < (CatAnimationConfig.attackToFrightChance
+            + CatAnimationConfig.attackToCrouchChance) {
+            await runCrouchPhase(preferredFacingRight: facingRight, origin: .idle)
+        } else if roll < (CatAnimationConfig.attackToFrightChance
+            + CatAnimationConfig.attackToCrouchChance
+            + CatAnimationConfig.attackToSitChance) {
+            await runSitPhase()
+        } else if roll < (CatAnimationConfig.attackToFrightChance
+            + CatAnimationConfig.attackToCrouchChance
+            + CatAnimationConfig.attackToSitChance
+            + CatAnimationConfig.attackToWalkChance) {
+            await runWalkCooldownPhase(goRight: facingRight)
+        } else {
+            settleToIdleFacing(facingRight)
+        }
+    }
+
+    // MARK: - Fright phase
+
+    private func runFrightPhase() async {
+        state = .fright
+        // Facing is preserved — the cat recoils in whatever direction it was looking.
+
+        await playClip(.fright)
+        guard !Task.isCancelled else { return }
+
+        // Brief frozen-in-shock hold on the last frame.
+        currentFrame = CatAnimationClip.fright.frames.last
+        let hold = TimeInterval.random(in: CatAnimationConfig.frightHoldMin...CatAnimationConfig.frightHoldMax)
+        do { try await Task.sleep(for: .seconds(hold)) } catch { return }
+        guard !Task.isCancelled else { return }
+
+        let roll = Double.random(in: 0..<1)
+        if roll < CatAnimationConfig.frightToRunChance {
+            await runRunPhase(preferredDirection: facingRight, allowWalkCooldown: true)
+        } else if roll < (CatAnimationConfig.frightToRunChance
+            + CatAnimationConfig.frightToCrouchChance) {
+            await runCrouchPhase(preferredFacingRight: facingRight, origin: .idle)
+        } else if roll < (CatAnimationConfig.frightToRunChance
+            + CatAnimationConfig.frightToCrouchChance
+            + CatAnimationConfig.frightToSneakChance) {
+            await runSneakPhase(preferredDirection: facingRight, origin: .idle)
+        } else {
+            settleToIdleFacing(facingRight)
+        }
     }
 
     // MARK: - Wall behavior

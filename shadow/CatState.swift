@@ -24,4 +24,6 @@ enum CatState: Equatable {
     case wallGrabRight
     case wallClimbLeft
     case wallClimbRight
+    case attack
+    case fright
 }

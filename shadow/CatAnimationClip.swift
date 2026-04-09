@@ -175,6 +175,30 @@ extension CatAnimationClip {
         )
     }()
 
+    /// Playful strike — one-shot pounce/swat flourish.
+    static let attack: CatAnimationClip = {
+        CatAnimationClip(
+            name: "attack",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.attackAsset,
+                frameCount: CatAnimationConfig.attackFrameCount
+            ),
+            frameDurations: CatAnimationConfig.attackFrameDurations
+        )
+    }()
+
+    /// Startled reaction — one-shot fright/recoil state.
+    static let fright: CatAnimationClip = {
+        CatAnimationClip(
+            name: "fright",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.frightAsset,
+                frameCount: CatAnimationConfig.frightFrameCount
+            ),
+            frameDurations: CatAnimationConfig.frightFrameDurations
+        )
+    }()
+
     /// Wall cling — brief hold state when the cat grips a vertical screen edge.
     static let wallGrab: CatAnimationClip = {
         CatAnimationClip(
