@@ -315,4 +315,48 @@ enum CatAnimationConfig {
     /// How long (seconds) a sleep episode lasts before waking up.
     static let sleepDurationMin: TimeInterval = 10.0
     static let sleepDurationMax: TimeInterval = 25.0
+
+    // MARK: - wallGrab clip
+
+    static let wallGrabAsset      = "cat05_wallgrab_strip8"
+    static let wallGrabFrameCount = 8
+
+    /// Deliberate cling cadence — slow enough to read as a held grip.
+    static let wallGrabFrameDurations: [TimeInterval] = [
+        0.13, 0.13, 0.13, 0.14,
+        0.14, 0.13, 0.13, 0.13,
+    ]
+
+    // MARK: - wallClimb clip
+
+    static let wallClimbAsset      = "cat05_wallclimb_strip8"
+    static let wallClimbFrameCount = 8
+
+    /// Labored upward movement cadence — slightly slower than walk.
+    static let wallClimbFrameDurations: [TimeInterval] = [
+        0.10, 0.10, 0.11, 0.11,
+        0.11, 0.10, 0.10, 0.10,
+    ]
+
+    /// Points per second the window moves upward while wall-climbing.
+    static let wallClimbSpeed: CGFloat = 42
+
+    // MARK: - Wall behavior
+
+    /// Probability per idle phase that a wall behavior triggers (only fires when at an edge).
+    static let wallGrabChance: Double = 0.03
+
+    /// How many wallGrab loops to hold before deciding to climb or release.
+    static let wallGrabHoldCyclesMin = 1
+    static let wallGrabHoldCyclesMax = 3
+
+    /// How long the cat climbs before stopping.
+    static let wallClimbDurationMin: TimeInterval = 1.2
+    static let wallClimbDurationMax: TimeInterval = 3.0
+
+    /// Probability that a grab hold transitions into a climb rather than releasing.
+    static let wallGrabToClimbChance: Double = 0.55
+
+    /// Probability that after climbing, the cat grabs again vs dropping to idle.
+    static let wallClimbToGrabChance: Double = 0.30
 }

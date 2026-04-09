@@ -96,6 +96,19 @@ final class CatBehaviorController: ObservableObject {
                 + CatAnimationConfig.hopChance
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.dashChance
+                + CatAnimationConfig.wallGrabChance) {
+                // Wall behavior only fires when the cat is already pressed against an edge.
+                if motionProxy?.isAtLeftEdge == true || motionProxy?.isAtRightEdge == true {
+                    await runWallBehaviorPhase()
+                }
+            } else if roll < (CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.crouchChance
+                + CatAnimationConfig.sitChance
+                + CatAnimationConfig.sneakChance
+                + CatAnimationConfig.hopChance
+                + CatAnimationConfig.runChance
+                + CatAnimationConfig.dashChance
+                + CatAnimationConfig.wallGrabChance
                 + CatAnimationConfig.walkChance) {
                 await runWalkPhase()
             }
@@ -542,6 +555,80 @@ final class CatBehaviorController: ObservableObject {
         settleToIdle()
     }
 
+    // MARK: - Wall behavior
+
+    /// Entry point: determines which edge the cat is on, then runs grab → optional climb → resolve.
+    private func runWallBehaviorPhase() async {
+        guard let proxy = motionProxy else { return }
+
+        // Determine facing: right edge → face right (into wall), left edge → face left (into wall).
+        let goRight: Bool
+        if proxy.isAtRightEdge {
+            goRight = true
+        } else if proxy.isAtLeftEdge {
+            goRight = false
+        } else {
+            return
+        }
+
+        await runWallGrabPhase(goRight: goRight)
+    }
+
+    private func runWallGrabPhase(goRight: Bool) async {
+        state = goRight ? .wallGrabRight : .wallGrabLeft
+        facingRight = goRight
+
+        let holdCycles = Int.random(
+            in: CatAnimationConfig.wallGrabHoldCyclesMin...CatAnimationConfig.wallGrabHoldCyclesMax
+        )
+        for _ in 0..<holdCycles {
+            guard !Task.isCancelled else { return }
+            await playClip(.wallGrab)
+        }
+        guard !Task.isCancelled else { return }
+
+        if Double.random(in: 0..<1) < CatAnimationConfig.wallGrabToClimbChance {
+            await runWallClimbPhase(goRight: goRight)
+        } else {
+            settleToIdleFacing(goRight)
+        }
+    }
+
+    private func runWallClimbPhase(goRight: Bool) async {
+        state = goRight ? .wallClimbRight : .wallClimbLeft
+        facingRight = goRight
+
+        let duration = TimeInterval.random(
+            in: CatAnimationConfig.wallClimbDurationMin...CatAnimationConfig.wallClimbDurationMax
+        )
+        let deadline = Date().addingTimeInterval(duration)
+
+        climbLoop: while !Task.isCancelled, Date() < deadline {
+            for index in 0..<CatAnimationClip.wallClimb.frameCount {
+                guard !Task.isCancelled, Date() < deadline else { break climbLoop }
+
+                currentFrame = CatAnimationClip.wallClimb.frames[safe: index]
+                let frameDuration = CatAnimationClip.wallClimb.frameDurations[safe: index] ?? 0.1
+                let dy = CatAnimationConfig.wallClimbSpeed * CGFloat(frameDuration)
+
+                if let proxy = motionProxy, !proxy.move(dy: dy) {
+                    // Reached the top edge — drop out cleanly.
+                    break climbLoop
+                }
+
+                do { try await Task.sleep(for: .seconds(frameDuration)) } catch { return }
+            }
+        }
+        guard !Task.isCancelled else { return }
+
+        // After climbing: optionally re-grab, then resolve.
+        if Double.random(in: 0..<1) < CatAnimationConfig.wallClimbToGrabChance {
+            await runWallGrabPhase(goRight: goRight)
+        } else {
+            settleToIdleFacing(goRight)
+        }
+    }
+
     // MARK: - Locomotion
 
     private func chooseMovementDirection(preferredDirection: Bool?) -> Bool? {
@@ -742,6 +829,19 @@ final class CatBehaviorController: ObservableObject {
             } else {
                 settleToIdleFacing(goRight)
             }
+        }
+    }
+
+    private func interpolatedOffsets(
+        from start: CGFloat,
+        to end: CGFloat,
+        steps: Int
+    ) -> [CGFloat] {
+        guard steps > 1 else { return [end] }
+
+        return (0..<steps).map { step in
+            let progress = CGFloat(step + 1) / CGFloat(steps)
+            return start + ((end - start) * progress)
         }
     }
 
