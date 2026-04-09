@@ -605,29 +605,6 @@ final class CatBehaviorController: ObservableObject {
             do { try await Task.sleep(for: .seconds(pause)) } catch { return }
         }
 
-        guard !Task.isCancelled else { return }
-
-        await playWallAerialPhase(
-            clip: .fall,
-            state: goRight ? .fallRight : .fallLeft,
-            goRight: goRight,
-            frameIndices: CatAnimationConfig.skyClimbFallFrameIndices,
-            spriteVerticalOffsets: CatAnimationConfig.skyClimbFallVerticalOffsets,
-            windowVerticalMoves: CatAnimationConfig.skyClimbFallVerticalMoves,
-            horizontalSpeed: CatAnimationConfig.skyClimbFallSpeed
-        )
-        guard !Task.isCancelled else { return }
-
-        await playAerialClip(
-            .land,
-            state: goRight ? .landRight : .landLeft,
-            goRight: goRight,
-            frameIndices: Array(0..<CatAnimationClip.land.frameCount),
-            verticalOffsets: CatAnimationConfig.landVerticalOffsets,
-            speed: CatAnimationConfig.skyClimbLandSpeed
-        )
-        guard !Task.isCancelled else { return }
-
         verticalOffset = 0
         settleToIdleFacing(goRight)
     }
