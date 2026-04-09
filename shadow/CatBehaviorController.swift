@@ -28,6 +28,7 @@ final class CatBehaviorController: ObservableObject {
     private(set) var state: CatState = .idle
     private weak var motionProxy: WindowMotionProxy?
     private var behaviorTask: Task<Void, Never>?
+    private var lastMouseReactionAt: Date = .distantPast
 
     // MARK: - Lifecycle
 
@@ -53,6 +54,23 @@ final class CatBehaviorController: ObservableObject {
             await runIdlePhase()
             guard !Task.isCancelled else { return }
 
+            let nearTop = motionProxy?.isNearTopEdge(within: CatAnimationConfig.verticalBiasInset) == true
+            let nearBottom = motionProxy?.isNearBottomEdge(within: CatAnimationConfig.verticalBiasInset) == true
+            let canAscend = motionProxy?.isAtTopEdge != true
+            let canDescend = motionProxy?.isAtBottomEdge != true
+
+            let hopChance = canAscend ? CatAnimationConfig.hopChance : 0
+            let skyClimbChance = canAscend
+                ? CatAnimationConfig.skyClimbChance
+                    + (nearBottom ? CatAnimationConfig.bottomScreenAscentBonusChance : 0)
+                : 0
+            let skyDescentChance = canDescend
+                ? CatAnimationConfig.skyDescentChance
+                    + (nearTop ? CatAnimationConfig.topScreenDescentBonusChance : 0)
+                : 0
+            let wallGrabChance = CatAnimationConfig.wallGrabChance
+                + (nearBottom ? CatAnimationConfig.bottomScreenWallBonusChance : 0)
+
             let roll = Double.random(in: 0..<1)
             if roll < CatAnimationConfig.lieDownChance {
                 await runLieDownPhase()
@@ -72,20 +90,39 @@ final class CatBehaviorController: ObservableObject {
                 + CatAnimationConfig.crouchChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.sneakChance
-                + CatAnimationConfig.hopChance) {
+                + hopChance) {
                 await runHopPhase(preferredDirection: nil, origin: .idle)
             } else if roll < (CatAnimationConfig.lieDownChance
                 + CatAnimationConfig.crouchChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.sneakChance
-                + CatAnimationConfig.hopChance
+                + hopChance
+                + skyClimbChance) {
+                await runSkyClimbPhase()
+            } else if roll < (CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.crouchChance
+                + CatAnimationConfig.sitChance
+                + CatAnimationConfig.sneakChance
+                + hopChance
+                + skyClimbChance
+                + skyDescentChance) {
+                await runSkyDescentPhase()
+            } else if roll < (CatAnimationConfig.lieDownChance
+                + CatAnimationConfig.crouchChance
+                + CatAnimationConfig.sitChance
+                + CatAnimationConfig.sneakChance
+                + hopChance
+                + skyClimbChance
+                + skyDescentChance
                 + CatAnimationConfig.runChance) {
                 await runRunPhase()
             } else if roll < (CatAnimationConfig.lieDownChance
                 + CatAnimationConfig.crouchChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.sneakChance
-                + CatAnimationConfig.hopChance
+                + hopChance
+                + skyClimbChance
+                + skyDescentChance
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.dashChance) {
                 await runDashPhase()
@@ -93,32 +130,35 @@ final class CatBehaviorController: ObservableObject {
                 + CatAnimationConfig.crouchChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.sneakChance
-                + CatAnimationConfig.hopChance
+                + hopChance
+                + skyClimbChance
+                + skyDescentChance
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.dashChance
-                + CatAnimationConfig.wallGrabChance) {
-                // Wall behavior only fires when the cat is already pressed against an edge.
-                if motionProxy?.isAtLeftEdge == true || motionProxy?.isAtRightEdge == true {
-                    await runWallBehaviorPhase()
-                }
+                + wallGrabChance) {
+                await runWallBehaviorPhase()
             } else if roll < (CatAnimationConfig.lieDownChance
                 + CatAnimationConfig.crouchChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.sneakChance
-                + CatAnimationConfig.hopChance
+                + hopChance
+                + skyClimbChance
+                + skyDescentChance
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.dashChance
-                + CatAnimationConfig.wallGrabChance
+                + wallGrabChance
                 + CatAnimationConfig.attackChance) {
                 await runAttackPhase()
             } else if roll < (CatAnimationConfig.lieDownChance
                 + CatAnimationConfig.crouchChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.sneakChance
-                + CatAnimationConfig.hopChance
+                + hopChance
+                + skyClimbChance
+                + skyDescentChance
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.dashChance
-                + CatAnimationConfig.wallGrabChance
+                + wallGrabChance
                 + CatAnimationConfig.attackChance
                 + CatAnimationConfig.frightChance) {
                 await runFrightPhase()
@@ -126,10 +166,12 @@ final class CatBehaviorController: ObservableObject {
                 + CatAnimationConfig.crouchChance
                 + CatAnimationConfig.sitChance
                 + CatAnimationConfig.sneakChance
-                + CatAnimationConfig.hopChance
+                + hopChance
+                + skyClimbChance
+                + skyDescentChance
                 + CatAnimationConfig.runChance
                 + CatAnimationConfig.dashChance
-                + CatAnimationConfig.wallGrabChance
+                + wallGrabChance
                 + CatAnimationConfig.walkChance) {
                 await runWalkPhase()
             }
@@ -148,6 +190,10 @@ final class CatBehaviorController: ObservableObject {
             await playClip(.idle)
             guard !Task.isCancelled else { return }
 
+            if await reactToNearbyMouseIfNeeded() {
+                return
+            }
+
             // Short pause between idle loops.
             let pause = TimeInterval.random(
                 in: CatAnimationConfig.idleLoopPauseMin...CatAnimationConfig.idleLoopPauseMax
@@ -157,6 +203,10 @@ final class CatBehaviorController: ObservableObject {
             // Occasionally insert a blink.
             if Double.random(in: 0..<1) < CatAnimationConfig.blinkVariationChance {
                 await playClip(.idleBlink)
+                guard !Task.isCancelled else { return }
+                if await reactToNearbyMouseIfNeeded() {
+                    return
+                }
             }
         }
     }
@@ -376,25 +426,52 @@ final class CatBehaviorController: ObservableObject {
         let runDuration = TimeInterval.random(
             in: CatAnimationConfig.runDurationMin...CatAnimationConfig.runDurationMax
         )
+        let isTurboRun = Double.random(in: 0..<1) < CatAnimationConfig.turboRunChance
+        let runSpeedMultiplier: CGFloat = isTurboRun
+            ? CatAnimationConfig.turboRunSpeedMultiplier
+            : 1
         await runMovementEpisode(
             clip: .run,
             state: goRight ? .runRight : .runLeft,
             goRight: goRight,
-            speed: CatAnimationConfig.runSpeed,
+            speed: CatAnimationConfig.runSpeed * runSpeedMultiplier,
             duration: runDuration
         )
         guard !Task.isCancelled else { return }
 
+        if isTurboRun, Double.random(in: 0..<1) < CatAnimationConfig.turboRunSkidChance {
+            await runTurboSkidPhase(goRight: goRight)
+            return
+        }
+
+        let canAscend = motionProxy?.isAtTopEdge != true
+        let runToSlideAttackComboChance = canAscend ? CatAnimationConfig.runToSlideAttackComboChance : 0
+        let runToSlideComboChance = canAscend ? CatAnimationConfig.runToSlideComboChance : 0
+        let runToHopChance = canAscend ? CatAnimationConfig.runToHopChance : 0
         let resolutionRoll = Double.random(in: 0..<1)
-        if resolutionRoll < CatAnimationConfig.runToHopChance {
+        if resolutionRoll < runToSlideAttackComboChance {
+            await runRunSlideAttackCombo(goRight: goRight)
+        } else if resolutionRoll < (runToSlideAttackComboChance
+            + runToSlideComboChance) {
+            await runRunSlideCombo(goRight: goRight)
+        } else if resolutionRoll < (runToSlideAttackComboChance
+            + runToSlideComboChance
+            + runToHopChance) {
             await runHopPhase(preferredDirection: goRight, origin: .run)
-        } else if resolutionRoll < (CatAnimationConfig.runToHopChance + CatAnimationConfig.runToDashChance) {
+        } else if resolutionRoll < (runToSlideAttackComboChance
+            + runToSlideComboChance
+            + runToHopChance
+            + CatAnimationConfig.runToDashChance) {
             await runDashPhase(preferredDirection: goRight, resolution: .run)
-        } else if allowWalkCooldown, resolutionRoll < (CatAnimationConfig.runToHopChance
+        } else if allowWalkCooldown, resolutionRoll < (runToSlideAttackComboChance
+            + runToSlideComboChance
+            + runToHopChance
             + CatAnimationConfig.runToDashChance
             + CatAnimationConfig.runToWalkChance) {
             await runWalkCooldownPhase(goRight: goRight)
-        } else if resolutionRoll < (CatAnimationConfig.runToHopChance
+        } else if resolutionRoll < (runToSlideAttackComboChance
+            + runToSlideComboChance
+            + runToHopChance
             + CatAnimationConfig.runToDashChance
             + CatAnimationConfig.runToWalkChance
             + CatAnimationConfig.runToSitChance) {
@@ -404,12 +481,56 @@ final class CatBehaviorController: ObservableObject {
         }
     }
 
+    private func runRunSlideCombo(goRight: Bool) async {
+        await playComboLeap(goRight: goRight, jumpSpeed: CatAnimationConfig.comboLeapJumpSpeed,
+            fallSpeed: CatAnimationConfig.comboLeapFallSpeed, landSpeed: CatAnimationConfig.comboLeapLandSpeed)
+        guard !Task.isCancelled else { return }
+
+        await playSlidingCrouch(goRight: goRight)
+        guard !Task.isCancelled else { return }
+
+        settleToIdleFacing(goRight)
+    }
+
+    private func runRunSlideAttackCombo(goRight: Bool) async {
+        await playComboLeap(goRight: goRight, jumpSpeed: CatAnimationConfig.comboLeapJumpSpeed,
+            fallSpeed: CatAnimationConfig.comboLeapFallSpeed, landSpeed: CatAnimationConfig.comboLeapLandSpeed)
+        guard !Task.isCancelled else { return }
+
+        await playSlidingCrouch(goRight: goRight)
+        guard !Task.isCancelled else { return }
+
+        await playComboLeap(goRight: goRight, jumpSpeed: CatAnimationConfig.slideAttackJumpSpeed,
+            fallSpeed: CatAnimationConfig.slideAttackFallSpeed, landSpeed: CatAnimationConfig.slideAttackLandSpeed)
+        guard !Task.isCancelled else { return }
+
+        await runAttackPhase()
+    }
+
+    private func runTurboSkidPhase(goRight: Bool) async {
+        state = .fright
+        facingRight = goRight
+
+        await playClip(.fright)
+        guard !Task.isCancelled else { return }
+
+        currentFrame = CatAnimationClip.fright.frames.last
+        do { try await Task.sleep(for: .seconds(0.18)) } catch { return }
+        guard !Task.isCancelled else { return }
+
+        await runCrouchPhase(preferredFacingRight: goRight, origin: .walk)
+    }
+
     // MARK: - Hop phase
 
     private func runHopPhase(
         preferredDirection: Bool? = nil,
         origin: HopOrigin = .idle
     ) async {
+        guard motionProxy?.isAtTopEdge != true else {
+            settleToIdleFacing(preferredDirection ?? facingRight)
+            return
+        }
         guard let goRight = chooseMovementDirection(preferredDirection: preferredDirection) else { return }
 
         let useExtendedFall = Double.random(in: 0..<1) < CatAnimationConfig.extendedFallChance
@@ -452,6 +573,106 @@ final class CatBehaviorController: ObservableObject {
 
         verticalOffset = 0
         await resolveHopLanding(origin: origin, goRight: goRight)
+    }
+
+    private func runSkyClimbPhase() async {
+        guard motionProxy?.isAtTopEdge != true else {
+            settleToIdleFacing(facingRight)
+            return
+        }
+        let goRight = chooseMovementDirection(preferredDirection: nil) ?? facingRight
+        let hopCount = Int.random(
+            in: CatAnimationConfig.skyClimbHopCountMin...CatAnimationConfig.skyClimbHopCountMax
+        )
+
+        for _ in 0..<hopCount {
+            guard !Task.isCancelled else { return }
+
+            await playWallAerialPhase(
+                clip: .jump,
+                state: goRight ? .jumpRight : .jumpLeft,
+                goRight: goRight,
+                frameIndices: Array(0..<CatAnimationClip.jump.frameCount),
+                spriteVerticalOffsets: CatAnimationConfig.skyClimbJumpVerticalOffsets,
+                windowVerticalMoves: CatAnimationConfig.skyClimbJumpVerticalMoves,
+                horizontalSpeed: CatAnimationConfig.skyClimbJumpSpeed
+            )
+            guard !Task.isCancelled else { return }
+
+            let pause = TimeInterval.random(
+                in: CatAnimationConfig.skyClimbStepPauseMin...CatAnimationConfig.skyClimbStepPauseMax
+            )
+            do { try await Task.sleep(for: .seconds(pause)) } catch { return }
+        }
+
+        guard !Task.isCancelled else { return }
+
+        await playWallAerialPhase(
+            clip: .fall,
+            state: goRight ? .fallRight : .fallLeft,
+            goRight: goRight,
+            frameIndices: CatAnimationConfig.skyClimbFallFrameIndices,
+            spriteVerticalOffsets: CatAnimationConfig.skyClimbFallVerticalOffsets,
+            windowVerticalMoves: CatAnimationConfig.skyClimbFallVerticalMoves,
+            horizontalSpeed: CatAnimationConfig.skyClimbFallSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        await playAerialClip(
+            .land,
+            state: goRight ? .landRight : .landLeft,
+            goRight: goRight,
+            frameIndices: Array(0..<CatAnimationClip.land.frameCount),
+            verticalOffsets: CatAnimationConfig.landVerticalOffsets,
+            speed: CatAnimationConfig.skyClimbLandSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        verticalOffset = 0
+        settleToIdleFacing(goRight)
+    }
+
+    private func runSkyDescentPhase() async {
+        guard motionProxy?.isAtBottomEdge != true else {
+            settleToIdleFacing(facingRight)
+            return
+        }
+        let goRight = chooseMovementDirection(preferredDirection: nil) ?? facingRight
+
+        await playWallAerialPhase(
+            clip: .jump,
+            state: goRight ? .jumpRight : .jumpLeft,
+            goRight: goRight,
+            frameIndices: Array(0..<CatAnimationClip.jump.frameCount),
+            spriteVerticalOffsets: CatAnimationConfig.skyDescentJumpVerticalOffsets,
+            windowVerticalMoves: CatAnimationConfig.skyDescentJumpVerticalMoves,
+            horizontalSpeed: CatAnimationConfig.skyDescentJumpSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        await playWallAerialPhase(
+            clip: .fall,
+            state: goRight ? .fallRight : .fallLeft,
+            goRight: goRight,
+            frameIndices: CatAnimationConfig.skyDescentFallFrameIndices,
+            spriteVerticalOffsets: CatAnimationConfig.skyDescentFallVerticalOffsets,
+            windowVerticalMoves: CatAnimationConfig.skyDescentFallVerticalMoves,
+            horizontalSpeed: CatAnimationConfig.skyDescentFallSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        await playAerialClip(
+            .land,
+            state: goRight ? .landRight : .landLeft,
+            goRight: goRight,
+            frameIndices: Array(0..<CatAnimationClip.land.frameCount),
+            verticalOffsets: CatAnimationConfig.landVerticalOffsets,
+            speed: CatAnimationConfig.skyDescentLandSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        verticalOffset = 0
+        settleToIdleFacing(goRight)
     }
 
     // MARK: - Dash phase
@@ -522,6 +743,11 @@ final class CatBehaviorController: ObservableObject {
         for _ in 0..<cycles {
             guard !Task.isCancelled else { return }
             await playClip(.sit)
+            guard !Task.isCancelled else { return }
+
+            if await reactToNearbyMouseIfNeeded() {
+                return
+            }
         }
 
         if Double.random(in: 0..<1) < CatAnimationConfig.sitToCrouchChance {
@@ -565,6 +791,10 @@ final class CatBehaviorController: ObservableObject {
         while !Task.isCancelled, Date() < deadline {
             await playLieDownRestLoop()
             guard !Task.isCancelled else { return }
+
+            if await reactToNearbyMouseIfNeeded() {
+                return
+            }
 
             let pause = TimeInterval.random(
                 in: CatAnimationConfig.lieDownRestLoopPauseMin...CatAnimationConfig.lieDownRestLoopPauseMax
@@ -661,18 +891,16 @@ final class CatBehaviorController: ObservableObject {
 
     // MARK: - Wall behavior
 
-    /// Entry point: determines which edge the cat is on, then runs grab → optional climb → resolve.
+    /// Entry point: chooses a wall side, then runs grab → optional climb → resolve.
     private func runWallBehaviorPhase() async {
-        guard let proxy = motionProxy else { return }
-
-        // Determine facing: right edge → face right (into wall), left edge → face left (into wall).
+        let proxy = motionProxy
         let goRight: Bool
-        if proxy.isAtRightEdge {
+        if proxy?.isNearRightEdge(within: CatAnimationConfig.wallDetectionInset) == true {
             goRight = true
-        } else if proxy.isAtLeftEdge {
+        } else if proxy?.isNearLeftEdge(within: CatAnimationConfig.wallDetectionInset) == true {
             goRight = false
         } else {
-            return
+            goRight = facingRight
         }
 
         await runWallGrabPhase(goRight: goRight)
@@ -691,14 +919,26 @@ final class CatBehaviorController: ObservableObject {
         }
         guard !Task.isCancelled else { return }
 
-        if Double.random(in: 0..<1) < CatAnimationConfig.wallGrabToClimbChance {
-            await runWallClimbPhase(goRight: goRight)
+        if motionProxy?.isAtTopEdge == true {
+            await runWallDropPhase(fromWallFacingRight: goRight)
         } else {
-            settleToIdleFacing(goRight)
+            let grabToClimbChance = motionProxy?.isNearBottomEdge(within: CatAnimationConfig.verticalBiasInset) == true
+                ? min(1, CatAnimationConfig.wallGrabToClimbChance + 0.25)
+                : CatAnimationConfig.wallGrabToClimbChance
+
+            if Double.random(in: 0..<1) < grabToClimbChance {
+                await runWallClimbPhase(goRight: goRight)
+            } else {
+                await runWallDropPhase(fromWallFacingRight: goRight)
+            }
         }
     }
 
     private func runWallClimbPhase(goRight: Bool) async {
+        guard motionProxy?.isAtTopEdge != true else {
+            await runWallDropPhase(fromWallFacingRight: goRight)
+            return
+        }
         state = goRight ? .wallClimbRight : .wallClimbLeft
         facingRight = goRight
 
@@ -725,12 +965,55 @@ final class CatBehaviorController: ObservableObject {
         }
         guard !Task.isCancelled else { return }
 
-        // After climbing: optionally re-grab, then resolve.
-        if Double.random(in: 0..<1) < CatAnimationConfig.wallClimbToGrabChance {
+        // After climbing: rarely re-grab, otherwise push off and take a long fall.
+        let climbToGrabChance = motionProxy?.isNearBottomEdge(within: CatAnimationConfig.verticalBiasInset) == true
+            ? min(1, CatAnimationConfig.wallClimbToGrabChance + 0.18)
+            : CatAnimationConfig.wallClimbToGrabChance
+
+        if Double.random(in: 0..<1) < climbToGrabChance {
             await runWallGrabPhase(goRight: goRight)
         } else {
-            settleToIdleFacing(goRight)
+            await runWallDropPhase(fromWallFacingRight: goRight)
         }
+    }
+
+    private func runWallDropPhase(fromWallFacingRight wallFacingRight: Bool) async {
+        let jumpAwayRight = !wallFacingRight
+
+        await playWallAerialPhase(
+            clip: .jump,
+            state: jumpAwayRight ? .jumpRight : .jumpLeft,
+            goRight: jumpAwayRight,
+            frameIndices: Array(0..<CatAnimationClip.jump.frameCount),
+            spriteVerticalOffsets: CatAnimationConfig.wallJumpOffVerticalOffsets,
+            windowVerticalMoves: CatAnimationConfig.wallJumpOffVerticalMoves,
+            horizontalSpeed: CatAnimationConfig.wallJumpOffSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        await playWallAerialPhase(
+            clip: .fall,
+            state: jumpAwayRight ? .fallRight : .fallLeft,
+            goRight: jumpAwayRight,
+            frameIndices: CatAnimationConfig.wallFallFrameIndices,
+            spriteVerticalOffsets: CatAnimationConfig.wallFallVerticalOffsets,
+            windowVerticalMoves: CatAnimationConfig.wallFallVerticalMoves,
+            horizontalSpeed: CatAnimationConfig.wallFallSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        await playAerialClip(
+            .land,
+            state: jumpAwayRight ? .landRight : .landLeft,
+            goRight: jumpAwayRight,
+            frameIndices: Array(0..<CatAnimationClip.land.frameCount),
+            verticalOffsets: CatAnimationConfig.landVerticalOffsets,
+            speed: CatAnimationConfig.wallLandSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        verticalOffset = 0
+        settleToIdleFacing(jumpAwayRight)
     }
 
     // MARK: - Locomotion
@@ -831,9 +1114,107 @@ final class CatBehaviorController: ObservableObject {
         }
     }
 
+    private func playComboLeap(goRight: Bool, jumpSpeed: CGFloat, fallSpeed: CGFloat, landSpeed: CGFloat) async {
+        let useExtendedFall = Double.random(in: 0..<1) < CatAnimationConfig.extendedFallChance
+        let fallIndices = useExtendedFall
+            ? CatAnimationConfig.extendedFallFrameIndices
+            : Array(0..<CatAnimationClip.fall.frameCount)
+        let fallOffsets = useExtendedFall
+            ? CatAnimationConfig.extendedFallVerticalOffsets
+            : CatAnimationConfig.fallVerticalOffsets
+
+        await playAerialClip(
+            .jump,
+            state: goRight ? .jumpRight : .jumpLeft,
+            goRight: goRight,
+            frameIndices: Array(0..<CatAnimationClip.jump.frameCount),
+            verticalOffsets: CatAnimationConfig.jumpVerticalOffsets,
+            speed: jumpSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        await playAerialClip(
+            .fall,
+            state: goRight ? .fallRight : .fallLeft,
+            goRight: goRight,
+            frameIndices: fallIndices,
+            verticalOffsets: fallOffsets,
+            speed: fallSpeed
+        )
+        guard !Task.isCancelled else { return }
+
+        await playAerialClip(
+            .land,
+            state: goRight ? .landRight : .landLeft,
+            goRight: goRight,
+            frameIndices: Array(0..<CatAnimationClip.land.frameCount),
+            verticalOffsets: CatAnimationConfig.landVerticalOffsets,
+            speed: landSpeed
+        )
+        verticalOffset = 0
+    }
+
+    private func playSlidingCrouch(goRight: Bool) async {
+        state = .crouch
+        facingRight = goRight
+
+        for index in 0..<CatAnimationClip.crouch.frameCount {
+            guard !Task.isCancelled else { return }
+
+            currentFrame = CatAnimationClip.crouch.frames[safe: index]
+            let frameDuration = CatAnimationClip.crouch.frameDurations[safe: index] ?? 0.1
+            let dx = CatAnimationConfig.slideSpeed * CGFloat(frameDuration) * (goRight ? 1 : -1)
+            _ = motionProxy?.move(dx: dx)
+
+            do { try await Task.sleep(for: .seconds(frameDuration)) } catch { return }
+        }
+
+        currentFrame = CatAnimationClip.crouch.frames.last
+        let slideDuration = TimeInterval.random(
+            in: CatAnimationConfig.slideDurationMin...CatAnimationConfig.slideDurationMax
+        )
+        let deadline = Date().addingTimeInterval(slideDuration)
+
+        while !Task.isCancelled, Date() < deadline {
+            let stepDuration = 0.03
+            let dx = CatAnimationConfig.slideSpeed * CGFloat(stepDuration) * (goRight ? 1 : -1)
+            _ = motionProxy?.move(dx: dx)
+            do { try await Task.sleep(for: .seconds(stepDuration)) } catch { return }
+        }
+    }
+
+    private func playWallAerialPhase(
+        clip: CatAnimationClip,
+        state newState: CatState,
+        goRight: Bool,
+        frameIndices: [Int],
+        spriteVerticalOffsets: [CGFloat],
+        windowVerticalMoves: [CGFloat],
+        horizontalSpeed: CGFloat
+    ) async {
+        state = newState
+        facingRight = goRight
+
+        for (stepIndex, frameIndex) in frameIndices.enumerated() {
+            guard !Task.isCancelled else { return }
+            guard clip.frames.indices.contains(frameIndex) else { continue }
+
+            currentFrame = clip.frames[safe: frameIndex]
+            verticalOffset = spriteVerticalOffsets[safe: stepIndex] ?? 0
+
+            let frameDuration = clip.frameDurations[safe: frameIndex] ?? 0.1
+            let dx = horizontalSpeed * CGFloat(frameDuration) * (goRight ? 1 : -1)
+            _ = motionProxy?.move(dx: dx)
+
+            let dy = windowVerticalMoves[safe: stepIndex] ?? 0
+            _ = motionProxy?.move(dy: dy)
+
+            do { try await Task.sleep(for: .seconds(frameDuration)) } catch { return }
+        }
+    }
+
     private func settleToIdle() {
         state = .idle
-        facingRight = true
         verticalOffset = 0
         currentFrame = CatAnimationClip.idle.frames[safe: 0]
     }
@@ -866,6 +1247,7 @@ final class CatBehaviorController: ObservableObject {
         }
 
         state = .idle
+        verticalOffset = 0
         currentFrame = CatAnimationClip.idle.frames[safe: 0]
     }
 
@@ -954,6 +1336,32 @@ final class CatBehaviorController: ObservableObject {
         facingRight = goRight
         verticalOffset = 0
         currentFrame = CatAnimationClip.idle.frames[safe: 0]
+    }
+
+    private func reactToNearbyMouseIfNeeded() async -> Bool {
+        guard let motionProxy else { return false }
+        guard state == .idle || state == .sit || state == .lieDown || state == .sleep else { return false }
+        guard Date().timeIntervalSince(lastMouseReactionAt) >= CatAnimationConfig.mouseReactionCooldown else {
+            return false
+        }
+        guard motionProxy.isCursorNearWindow(maxDistance: CatAnimationConfig.mouseNoticeDistance) else {
+            return false
+        }
+        guard Double.random(in: 0..<1) < CatAnimationConfig.mouseReactionChance else {
+            return false
+        }
+
+        lastMouseReactionAt = Date()
+        let cursorOnRight = motionProxy.cursorIsToRightOfWindowCenter()
+        facingRight = cursorOnRight
+
+        guard motionProxy.isCursorVeryCloseToWindow(padding: CatAnimationConfig.mousePouncePadding) else {
+            return false
+        }
+
+        await runAttackPhase()
+
+        return true
     }
 
     // MARK: - Animation playback
