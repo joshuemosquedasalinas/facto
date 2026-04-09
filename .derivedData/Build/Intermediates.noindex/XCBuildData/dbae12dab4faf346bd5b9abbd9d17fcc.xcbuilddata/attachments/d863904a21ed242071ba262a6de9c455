@@ -1,0 +1,119 @@
+{
+  "" : {
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadow-primary.dia",
+    "emit-module-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadow-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadow-primary-emit-module.dia",
+    "pch" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadow-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadow-primary.swiftdeps"
+  },
+  "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/CatAnimationClip.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationClip~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/CatAnimationConfig.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatAnimationConfig~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/CatBehaviorController.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatBehaviorController~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/CatSpriteLoader.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatSpriteLoader~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/CatState.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatState~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/CatView.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/CatView~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/ContentView.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/WindowAccessor.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowAccessor~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/WindowMotionProxy.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/WindowMotionProxy~partial.swiftmodule"
+  },
+  "/Users/joshue/projects/shadow/shadow/shadowApp.swift" : {
+    "const-values" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp.swiftconstvalues",
+    "dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp.d",
+    "diagnostics" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp.dia",
+    "index-unit-output-path" : "/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp.o",
+    "llvm-bc" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp.bc",
+    "object" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp.o",
+    "swift-dependencies" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp.swiftdeps",
+    "swiftmodule" : "/Users/joshue/projects/shadow/.derivedData/Build/Intermediates.noindex/shadow.build/Debug/shadow.build/Objects-normal/arm64/shadowApp~partial.swiftmodule"
+  }
+}

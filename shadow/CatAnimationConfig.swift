@@ -57,6 +57,20 @@ enum CatAnimationConfig {
     /// Probability per idle phase that a blink is inserted after an idle cycle.
     static let blinkVariationChance: Double = 0.25
 
+    // MARK: - Mouse interaction
+
+    /// Cursor proximity required before the cat even considers reacting.
+    static let mouseNoticeDistance: CGFloat = 240
+
+    /// Tighter proximity where the cat treats the cursor like an in-your-face poke.
+    static let mousePouncePadding: CGFloat = 40
+
+    /// The cat should stay mostly autonomous, so only some proximity checks trigger.
+    static let mouseReactionChance: Double = 0.32
+
+    /// Prevent repeated reactions while the cursor lingers nearby.
+    static let mouseReactionCooldown: TimeInterval = 2.8
+
     // MARK: - Walk behavior
 
     /// Probability that a walk episode follows an idle phase.
@@ -133,6 +147,14 @@ enum CatAnimationConfig {
 
     /// Probability that a hop episode follows an idle phase.
     static let hopChance: Double = 0.05
+    static let skyClimbChance: Double = 0.08
+    static let skyDescentChance: Double = 0.05
+
+    /// Bias vertical behaviors based on where the cat already is on screen.
+    static let verticalBiasInset: CGFloat = 180
+    static let topScreenDescentBonusChance: Double = 0.20
+    static let bottomScreenAscentBonusChance: Double = 0.20
+    static let bottomScreenWallBonusChance: Double = 0.18
 
     /// Probabilities that grounded locomotion and low postures spike into a hop.
     static let walkToHopChance: Double = 0.11
@@ -165,6 +187,30 @@ enum CatAnimationConfig {
     static let hopFromCrouchToCrouchChance: Double = 0.22
     static let hopFromSneakToCrouchChance: Double = 0.34
 
+    /// Multi-hop screen climb tuning.
+    static let skyClimbHopCountMin = 2
+    static let skyClimbHopCountMax = 5
+    static let skyClimbJumpSpeed: CGFloat = 46
+    static let skyClimbJumpVerticalOffsets: [CGFloat] = [-10, -22, -36, -26]
+    static let skyClimbJumpVerticalMoves: [CGFloat] = [16, 28, 34, 20]
+    static let skyClimbStepPauseMin: TimeInterval = 0.04
+    static let skyClimbStepPauseMax: TimeInterval = 0.12
+    static let skyClimbFallSpeed: CGFloat = 72
+    static let skyClimbFallVerticalOffsets: [CGFloat] = [-14, -2, 18, 40, 66, 94]
+    static let skyClimbFallVerticalMoves: [CGFloat] = [-22, -38, -56, -74, -94, -118]
+    static let skyClimbFallFrameIndices: [Int] = [0, 1, 2, 2, 2, 2]
+    static let skyClimbLandSpeed: CGFloat = 36
+
+    /// Long descending screen drop tuning.
+    static let skyDescentJumpSpeed: CGFloat = 84
+    static let skyDescentJumpVerticalOffsets: [CGFloat] = [-6, -12, -18, -12]
+    static let skyDescentJumpVerticalMoves: [CGFloat] = [4, 8, 10, 6]
+    static let skyDescentFallSpeed: CGFloat = 96
+    static let skyDescentFallVerticalOffsets: [CGFloat] = [-8, 8, 28, 54, 82, 112, 140, 166]
+    static let skyDescentFallVerticalMoves: [CGFloat] = [-16, -28, -44, -62, -84, -106, -130, -150]
+    static let skyDescentFallFrameIndices: [Int] = [0, 1, 2, 2, 2, 2, 2, 2]
+    static let skyDescentLandSpeed: CGFloat = 40
+
     // MARK: - run clip
 
     static let runAsset      = "cat05_run_strip4"
@@ -177,6 +223,11 @@ enum CatAnimationConfig {
     /// Points per second the window moves while running.
     static let runSpeed: CGFloat = 160
 
+    /// Some run bursts should feel like a sudden zoom instead of the normal gait.
+    static let turboRunChance: Double = 0.18
+    static let turboRunSpeedMultiplier: CGFloat = 2
+    static let turboRunSkidChance: Double = 0.4
+
     // MARK: - Run behavior
 
     /// Probability that a run episode follows an idle phase. Lower than walk.
@@ -184,7 +235,7 @@ enum CatAnimationConfig {
 
     /// How long (seconds) a run burst lasts before settling down.
     static let runDurationMin: TimeInterval = 0.7
-    static let runDurationMax: TimeInterval = 1.6
+    static let runDurationMax: TimeInterval = 3.2
 
     /// How often a run burst cools back down into walking instead of stopping outright.
     static let runToWalkChance: Double = 0.40
@@ -194,6 +245,25 @@ enum CatAnimationConfig {
 
     /// How often a run burst spikes into a one-shot dash.
     static let runToDashChance: Double = 0.12
+
+    /// Dedicated combo branches that turn a run into a leap-slide sequence.
+    static let runToSlideComboChance: Double = 0.12
+    static let runToSlideAttackComboChance: Double = 0.07
+
+    /// Combo leap tuning.
+    static let comboLeapJumpSpeed: CGFloat = 154
+    static let comboLeapFallSpeed: CGFloat = 112
+    static let comboLeapLandSpeed: CGFloat = 54
+
+    /// Sliding crouch tuning.
+    static let slideSpeed: CGFloat = 118
+    static let slideDurationMin: TimeInterval = 0.28
+    static let slideDurationMax: TimeInterval = 0.52
+
+    /// Follow-through leap after the slide before the pounce attack.
+    static let slideAttackJumpSpeed: CGFloat = 132
+    static let slideAttackFallSpeed: CGFloat = 98
+    static let slideAttackLandSpeed: CGFloat = 48
 
     // MARK: - dash clip
 
@@ -393,24 +463,37 @@ enum CatAnimationConfig {
     ]
 
     /// Points per second the window moves upward while wall-climbing.
-    static let wallClimbSpeed: CGFloat = 42
+    static let wallClimbSpeed: CGFloat = 64
 
     // MARK: - Wall behavior
 
     /// Probability per idle phase that a wall behavior triggers (only fires when at an edge).
-    static let wallGrabChance: Double = 0.03
+    static let wallGrabChance: Double = 0.14
 
     /// How many wallGrab loops to hold before deciding to climb or release.
-    static let wallGrabHoldCyclesMin = 1
-    static let wallGrabHoldCyclesMax = 3
+    static let wallGrabHoldCyclesMin = 3
+    static let wallGrabHoldCyclesMax = 7
 
     /// How long the cat climbs before stopping.
-    static let wallClimbDurationMin: TimeInterval = 1.2
-    static let wallClimbDurationMax: TimeInterval = 3.0
+    static let wallClimbDurationMin: TimeInterval = 2.6
+    static let wallClimbDurationMax: TimeInterval = 5.2
 
     /// Probability that a grab hold transitions into a climb rather than releasing.
-    static let wallGrabToClimbChance: Double = 0.55
+    static let wallGrabToClimbChance: Double = 0.85
 
     /// Probability that after climbing, the cat grabs again vs dropping to idle.
-    static let wallClimbToGrabChance: Double = 0.30
+    static let wallClimbToGrabChance: Double = 0.08
+
+    /// Treat "near the edge" as a valid wall zone so wall behavior appears more often.
+    static let wallDetectionInset: CGFloat = 80
+
+    /// Dramatic wall push-off and long drop tuning.
+    static let wallJumpOffSpeed: CGFloat = 140
+    static let wallJumpOffVerticalOffsets: [CGFloat] = [-4, -14, -24, -18]
+    static let wallJumpOffVerticalMoves: [CGFloat] = [8, 16, 24, 14]
+    static let wallFallSpeed: CGFloat = 110
+    static let wallFallVerticalOffsets: [CGFloat] = [-8, 4, 18, 34, 52, 70, 88, 104]
+    static let wallFallVerticalMoves: [CGFloat] = [-18, -30, -42, -56, -70, -84, -96, -110]
+    static let wallFallFrameIndices: [Int] = [0, 1, 2, 2, 2, 2, 2, 2]
+    static let wallLandSpeed: CGFloat = 44
 }

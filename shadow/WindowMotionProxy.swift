@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import CoreGraphics
 
 /// Holds a weak reference to the app window and provides screen-aware movement.
 /// Populated by WindowAccessor once the window is available.
@@ -21,6 +22,23 @@ final class WindowMotionProxy: ObservableObject {
     private var windowOriginX: CGFloat { window?.frame.origin.x ?? 0 }
     private var windowOriginY: CGFloat { window?.frame.origin.y ?? 0 }
 
+    var windowFrame: CGRect {
+        window?.frame ?? CGRect(
+            x: windowOriginX,
+            y: windowOriginY,
+            width: windowWidth,
+            height: windowHeight
+        )
+    }
+
+    var windowCenter: CGPoint {
+        CGPoint(x: windowFrame.midX, y: windowFrame.midY)
+    }
+
+    var cursorLocation: CGPoint {
+        NSEvent.mouseLocation
+    }
+
     // MARK: - Edge detection
 
     var isAtLeftEdge: Bool {
@@ -33,6 +51,26 @@ final class WindowMotionProxy: ObservableObject {
 
     var isAtTopEdge: Bool {
         windowOriginY + windowHeight >= screenBounds.maxY - 2
+    }
+
+    var isAtBottomEdge: Bool {
+        windowOriginY <= screenBounds.minY + 2
+    }
+
+    func isNearLeftEdge(within inset: CGFloat) -> Bool {
+        windowOriginX <= screenBounds.minX + inset
+    }
+
+    func isNearRightEdge(within inset: CGFloat) -> Bool {
+        windowOriginX + windowWidth >= screenBounds.maxX - inset
+    }
+
+    func isNearTopEdge(within inset: CGFloat) -> Bool {
+        windowOriginY + windowHeight >= screenBounds.maxY - inset
+    }
+
+    func isNearBottomEdge(within inset: CGFloat) -> Bool {
+        windowOriginY <= screenBounds.minY + inset
     }
 
     // MARK: - Movement
@@ -63,5 +101,21 @@ final class WindowMotionProxy: ObservableObject {
         let newY     = min(max(origin.y + dy, minY), maxY)
         window.setFrameOrigin(NSPoint(x: origin.x, y: newY))
         return dy > 0 ? newY > origin.y : newY < origin.y
+    }
+
+    func cursorDistanceFromWindowCenter() -> CGFloat {
+        hypot(cursorLocation.x - windowCenter.x, cursorLocation.y - windowCenter.y)
+    }
+
+    func isCursorNearWindow(maxDistance: CGFloat) -> Bool {
+        cursorDistanceFromWindowCenter() <= maxDistance
+    }
+
+    func isCursorVeryCloseToWindow(padding: CGFloat) -> Bool {
+        windowFrame.insetBy(dx: -padding, dy: -padding).contains(cursorLocation)
+    }
+
+    func cursorIsToRightOfWindowCenter() -> Bool {
+        cursorLocation.x >= windowCenter.x
     }
 }

@@ -1,0 +1,16 @@
+{
+  "source": "/Users/joshue/projects/shadow/shadow/ContentView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Hover",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 22
+        }
+      }
+    ]
+  },
+  "version": 1
+}
