@@ -12,9 +12,9 @@ struct shadowApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .frame(minWidth: 220, minHeight: 220)
+                .frame(minWidth: 160, minHeight: 160)
         }
-        .defaultSize(width: 360, height: 360)
+        .defaultSize(width: 160, height: 160)
         .windowResizability(.contentSize)
         .commands {
             CommandGroup(replacing: .newItem) { }

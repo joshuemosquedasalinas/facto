@@ -174,4 +174,28 @@ extension CatAnimationClip {
             frameDurations: CatAnimationConfig.sleepFrameDurations
         )
     }()
+
+    /// Wall cling — brief hold state when the cat grips a vertical screen edge.
+    static let wallGrab: CatAnimationClip = {
+        CatAnimationClip(
+            name: "wallGrab",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.wallGrabAsset,
+                frameCount: CatAnimationConfig.wallGrabFrameCount
+            ),
+            frameDurations: CatAnimationConfig.wallGrabFrameDurations
+        )
+    }()
+
+    /// Wall climb — active upward movement along a vertical screen edge.
+    static let wallClimb: CatAnimationClip = {
+        CatAnimationClip(
+            name: "wallClimb",
+            frames: CatSpriteLoader.loadStrip(
+                assetName: CatAnimationConfig.wallClimbAsset,
+                frameCount: CatAnimationConfig.wallClimbFrameCount
+            ),
+            frameDurations: CatAnimationConfig.wallClimbFrameDurations
+        )
+    }()
 }

@@ -20,4 +20,8 @@ enum CatState: Equatable {
     case sit
     case lieDown
     case sleep
+    case wallGrabLeft
+    case wallGrabRight
+    case wallClimbLeft
+    case wallClimbRight
 }

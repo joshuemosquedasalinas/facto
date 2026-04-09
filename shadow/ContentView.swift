@@ -27,7 +27,6 @@ struct ContentView: View {
                     }
                 }
         }
-        .padding(18)
         .background(WindowAccessor(isHovering: isHovering, motionProxy: motionProxy))
         .onAppear {
             behaviorController.start(motionProxy: motionProxy)
