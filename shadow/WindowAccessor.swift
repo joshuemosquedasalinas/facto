@@ -30,7 +30,7 @@ struct WindowAccessor: NSViewRepresentable {
 
         // Lock the window to exactly the sprite display size so edge detection
         // fires when the sprite itself reaches the screen boundary.
-        let side = CatAnimationConfig.frameSize.width * CatAnimationConfig.displayScale
+        let side = CatAnimationConfig.Render.frameSize.width * CatAnimationConfig.Render.displayScale
         let size = NSSize(width: side, height: side)
         if window.frame.size != size {
             window.setContentSize(size)

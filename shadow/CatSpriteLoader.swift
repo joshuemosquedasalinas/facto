@@ -7,10 +7,11 @@ enum CatSpriteLoader {
     /// Slices a horizontal sprite strip into `frameCount` equal-width frames.
     ///
     /// - Parameters:
-    ///   - assetName: The resource name of the PNG inside the main bundle (no extension).
+    ///   - asset: The sprite strip to load.
     ///   - frameCount: Number of frames to extract from the strip.
     /// - Returns: Ordered array of NSImage frames, left → right. Empty on failure.
-    static func loadStrip(assetName: String, frameCount: Int) -> [NSImage] {
+    static func loadStrip(asset: SpriteAsset, frameCount: Int) -> [NSImage] {
+        let assetName = asset.rawValue
         guard
             let url = Bundle.main.url(forResource: assetName, withExtension: "png"),
             let source = NSImage(contentsOf: url)

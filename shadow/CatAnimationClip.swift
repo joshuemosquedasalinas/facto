@@ -24,10 +24,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "idle",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.idleAsset,
-                frameCount: CatAnimationConfig.idleFrameCount
+                asset:CatAnimationConfig.Idle.asset,
+                frameCount: CatAnimationConfig.Idle.frameCount
             ),
-            frameDurations: CatAnimationConfig.idleFrameDurations
+            frameDurations: CatAnimationConfig.Idle.frameDurations
         )
     }()
 
@@ -36,10 +36,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "idleBlink",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.idleBlinkAsset,
-                frameCount: CatAnimationConfig.idleBlinkFrameCount
+                asset:CatAnimationConfig.Idle.Blink.asset,
+                frameCount: CatAnimationConfig.Idle.Blink.frameCount
             ),
-            frameDurations: CatAnimationConfig.idleBlinkFrameDurations
+            frameDurations: CatAnimationConfig.Idle.Blink.frameDurations
         )
     }()
 
@@ -48,10 +48,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "walk",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.walkAsset,
-                frameCount: CatAnimationConfig.walkFrameCount
+                asset:CatAnimationConfig.Walk.asset,
+                frameCount: CatAnimationConfig.Walk.frameCount
             ),
-            frameDurations: CatAnimationConfig.walkFrameDurations
+            frameDurations: CatAnimationConfig.Walk.frameDurations
         )
     }()
 
@@ -60,10 +60,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "sneak",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.sneakAsset,
-                frameCount: CatAnimationConfig.sneakFrameCount
+                asset:CatAnimationConfig.Sneak.asset,
+                frameCount: CatAnimationConfig.Sneak.frameCount
             ),
-            frameDurations: CatAnimationConfig.sneakFrameDurations
+            frameDurations: CatAnimationConfig.Sneak.frameDurations
         )
     }()
 
@@ -72,10 +72,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "jump",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.jumpAsset,
-                frameCount: CatAnimationConfig.jumpFrameCount
+                asset:CatAnimationConfig.Aerial.Jump.asset,
+                frameCount: CatAnimationConfig.Aerial.Jump.frameCount
             ),
-            frameDurations: CatAnimationConfig.jumpFrameDurations
+            frameDurations: CatAnimationConfig.Aerial.Jump.frameDurations
         )
     }()
 
@@ -84,10 +84,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "fall",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.fallAsset,
-                frameCount: CatAnimationConfig.fallFrameCount
+                asset:CatAnimationConfig.Aerial.Fall.asset,
+                frameCount: CatAnimationConfig.Aerial.Fall.frameCount
             ),
-            frameDurations: CatAnimationConfig.fallFrameDurations
+            frameDurations: CatAnimationConfig.Aerial.Fall.frameDurations
         )
     }()
 
@@ -96,10 +96,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "land",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.landAsset,
-                frameCount: CatAnimationConfig.landFrameCount
+                asset:CatAnimationConfig.Aerial.Land.asset,
+                frameCount: CatAnimationConfig.Aerial.Land.frameCount
             ),
-            frameDurations: CatAnimationConfig.landFrameDurations
+            frameDurations: CatAnimationConfig.Aerial.Land.frameDurations
         )
     }()
 
@@ -108,10 +108,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "run",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.runAsset,
-                frameCount: CatAnimationConfig.runFrameCount
+                asset:CatAnimationConfig.Run.asset,
+                frameCount: CatAnimationConfig.Run.frameCount
             ),
-            frameDurations: CatAnimationConfig.runFrameDurations
+            frameDurations: CatAnimationConfig.Run.frameDurations
         )
     }()
 
@@ -120,10 +120,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "dash",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.dashAsset,
-                frameCount: CatAnimationConfig.dashFrameCount
+                asset:CatAnimationConfig.Dash.asset,
+                frameCount: CatAnimationConfig.Dash.frameCount
             ),
-            frameDurations: CatAnimationConfig.dashFrameDurations
+            frameDurations: CatAnimationConfig.Dash.frameDurations
         )
     }()
 
@@ -132,10 +132,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "crouch",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.crouchAsset,
-                frameCount: CatAnimationConfig.crouchFrameCount
+                asset:CatAnimationConfig.Crouch.asset,
+                frameCount: CatAnimationConfig.Crouch.frameCount
             ),
-            frameDurations: CatAnimationConfig.crouchFrameDurations
+            frameDurations: CatAnimationConfig.Crouch.frameDurations
         )
     }()
 
@@ -144,10 +144,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "sit",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.sitAsset,
-                frameCount: CatAnimationConfig.sitFrameCount
+                asset:CatAnimationConfig.Sit.asset,
+                frameCount: CatAnimationConfig.Sit.frameCount
             ),
-            frameDurations: CatAnimationConfig.sitFrameDurations
+            frameDurations: CatAnimationConfig.Sit.frameDurations
         )
     }()
 
@@ -156,10 +156,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "lieDown",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.lieDownAsset,
-                frameCount: CatAnimationConfig.lieDownFrameCount
+                asset:CatAnimationConfig.LieDown.asset,
+                frameCount: CatAnimationConfig.LieDown.frameCount
             ),
-            frameDurations: CatAnimationConfig.lieDownFrameDurations
+            frameDurations: CatAnimationConfig.LieDown.frameDurations
         )
     }()
 
@@ -168,10 +168,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "sleep",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.sleepAsset,
-                frameCount: CatAnimationConfig.sleepFrameCount
+                asset:CatAnimationConfig.Sleep.asset,
+                frameCount: CatAnimationConfig.Sleep.frameCount
             ),
-            frameDurations: CatAnimationConfig.sleepFrameDurations
+            frameDurations: CatAnimationConfig.Sleep.frameDurations
         )
     }()
 
@@ -180,10 +180,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "attack",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.attackAsset,
-                frameCount: CatAnimationConfig.attackFrameCount
+                asset:CatAnimationConfig.Attack.asset,
+                frameCount: CatAnimationConfig.Attack.frameCount
             ),
-            frameDurations: CatAnimationConfig.attackFrameDurations
+            frameDurations: CatAnimationConfig.Attack.frameDurations
         )
     }()
 
@@ -192,10 +192,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "fright",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.frightAsset,
-                frameCount: CatAnimationConfig.frightFrameCount
+                asset:CatAnimationConfig.Fright.asset,
+                frameCount: CatAnimationConfig.Fright.frameCount
             ),
-            frameDurations: CatAnimationConfig.frightFrameDurations
+            frameDurations: CatAnimationConfig.Fright.frameDurations
         )
     }()
 
@@ -204,10 +204,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "wallGrab",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.wallGrabAsset,
-                frameCount: CatAnimationConfig.wallGrabFrameCount
+                asset:CatAnimationConfig.WallGrab.asset,
+                frameCount: CatAnimationConfig.WallGrab.frameCount
             ),
-            frameDurations: CatAnimationConfig.wallGrabFrameDurations
+            frameDurations: CatAnimationConfig.WallGrab.frameDurations
         )
     }()
 
@@ -216,10 +216,10 @@ extension CatAnimationClip {
         CatAnimationClip(
             name: "wallClimb",
             frames: CatSpriteLoader.loadStrip(
-                assetName: CatAnimationConfig.wallClimbAsset,
-                frameCount: CatAnimationConfig.wallClimbFrameCount
+                asset:CatAnimationConfig.WallClimb.asset,
+                frameCount: CatAnimationConfig.WallClimb.frameCount
             ),
-            frameDurations: CatAnimationConfig.wallClimbFrameDurations
+            frameDurations: CatAnimationConfig.WallClimb.frameDurations
         )
     }()
 }

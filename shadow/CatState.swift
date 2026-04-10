@@ -1,5 +1,4 @@
 /// All possible behavior states for the cat.
-/// Add new states here as the pet gains behaviors (sit, sleep, lieDown, etc.).
 enum CatState: Equatable {
     case idle
     case crouch
@@ -26,4 +25,33 @@ enum CatState: Equatable {
     case wallClimbRight
     case attack
     case fright
+}
+
+enum HopOrigin {
+    case idle
+    case walk
+    case run
+    case crouch
+    case sneak
+}
+
+enum SneakOrigin {
+    case idle
+    case sit
+    case lieDown
+    case crouch
+}
+
+enum CrouchOrigin {
+    case idle
+    case walk
+    case sit
+    case lieDown
+    case sneak
+}
+
+enum DashResolution {
+    case idle
+    case walk
+    case run
 }
