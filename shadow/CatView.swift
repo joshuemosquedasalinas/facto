@@ -13,8 +13,8 @@ struct CatView: View {
                     .resizable()
                     .interpolation(.none)
                     .frame(
-                        width:  CatAnimationConfig.frameSize.width  * CatAnimationConfig.displayScale,
-                        height: CatAnimationConfig.frameSize.height * CatAnimationConfig.displayScale
+                        width:  CatAnimationConfig.Render.frameSize.width  * CatAnimationConfig.Render.displayScale,
+                        height: CatAnimationConfig.Render.frameSize.height * CatAnimationConfig.Render.displayScale
                     )
                     .scaleEffect(x: controller.facingRight ? 1 : -1, y: 1)
                     .offset(y: controller.verticalOffset)
