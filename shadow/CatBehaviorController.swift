@@ -13,6 +13,7 @@ final class CatBehaviorController: ObservableObject, CatBehaviorContext {
     @Published private(set) var facingRight: Bool = true
     @Published private(set) var verticalOffset: CGFloat = 0
     @Published private(set) var currentVariant: CatVariant
+    @Published private(set) var meowText: String? = nil
 
     // MARK: - Internal state
 
@@ -22,6 +23,12 @@ final class CatBehaviorController: ObservableObject, CatBehaviorContext {
 
     private var _motionProxy: WindowMotionProxy?
     private var behaviorTask: Task<Void, Never>?
+    private var meowTask: Task<Void, Never>?
+
+    private static let meowVariants = [
+        "meow ♡", "mrrrow~", "mew!", "purrrr...",
+        "MEOW!", "mrrp?", "*yawn*", "nya~ ♪", "mew?", "prrrr ♡"
+    ]
 
     private static let variantDefaultsKey = "catVariant"
 
@@ -76,13 +83,34 @@ final class CatBehaviorController: ObservableObject, CatBehaviorContext {
 
     // MARK: - Lifecycle
 
-    deinit { behaviorTask?.cancel() }
+    deinit {
+        behaviorTask?.cancel()
+        meowTask?.cancel()
+    }
 
     func start(motionProxy: WindowMotionProxy) {
         self._motionProxy = motionProxy
         behaviorTask?.cancel()
         behaviorTask = Task { [weak self] in
             await self?.runBehaviorLoop()
+        }
+        startMeowLoop()
+    }
+
+    private func startMeowLoop() {
+        meowTask?.cancel()
+        meowTask = Task { [weak self] in
+            while !Task.isCancelled {
+                let delay = TimeInterval.random(in: 25...75)
+                try? await Task.sleep(for: .seconds(delay))
+                guard !Task.isCancelled, let self else { return }
+                let calmStates: Set<CatState> = [.idle, .sit, .lieDown, .sleep]
+                if calmStates.contains(self.state) {
+                    self.meowText = Self.meowVariants.randomElement()
+                    try? await Task.sleep(for: .seconds(2.5))
+                    self.meowText = nil
+                }
+            }
         }
     }
 
