@@ -16,21 +16,12 @@ Shadow renders a sprite-animated cat in a transparent, borderless window that mo
 
 ## Cat variants
 
-Five color options selectable from the right-click context menu:
-
-┌────────┬──────┐
-│  Name  │ Code │
-├────────┼──────┤
-│ Brown  │ 01   │
-├────────┼──────┤
-│ Tuxedo │ 02   │
-├────────┼──────┤
-│ Orange │ 03   │
-├────────┼──────┤
-│ Grey   │ 04   │
-├────────┼──────┤
-│ Black  │ 05   │
-└────────┴──────┘
+Five color options selectable from the right-click context menu: 
+1. Brown (01)
+2. Tuxedo (02)
+3. Orange (03)
+4. Gray (04)
+5. Black (05)
 
 ## Usage
 
